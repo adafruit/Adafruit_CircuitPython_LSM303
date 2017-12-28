@@ -112,17 +112,10 @@ MAGRATE_30                 = const(0x05)  # 30 Hz
 MAGRATE_75                 = const(0x06)  # 75 Hz
 MAGRATE_220                = const(0x07)  # 200 Hz
 
-# Sensor types
-_ACCELTYPE                 = True
-_MAGTYPE                   = False
-
 # Conversion constants
-_LSM303ACCEL_MG_LSB        = 16704.0        # 1, 2, 4 or 12 mg per lsb
-_LSM303MAG_GAUSS_LSB_XY    = 1100.0       # Varies with gain
-_LSM303MAG_GAUSS_LSB_Z     = 980.0        # Varies with gain
-
+_LSM303ACCEL_MG_LSB        = 16704.0
 _GRAVITY_STANDARD          = 9.80665      # Earth's gravity in m/s^2
-_GAUSS_TO_MICROTESLA       = 100.0          # Gauss to micro-Tesla multiplier
+_GAUSS_TO_MICROTESLA       = 100.0        # Gauss to micro-Tesla multiplier
 
 class LSM303(object):
     """Driver for the LSM303 accelerometer/magnetometer."""
@@ -135,101 +128,101 @@ class LSM303(object):
     def __init__(self, i2c):
         self._accel_device = I2CDevice(i2c, _ADDRESS_ACCEL)
         self._mag_device = I2CDevice(i2c, _ADDRESS_MAG)
-        self._write_u8(_ACCELTYPE, _REG_ACCEL_CTRL_REG1_A, 0x27) # Enable the accelerometer
-        self._write_u8(_MAGTYPE, _REG_MAG_MR_REG_M, 0x00)        # Enable the magnetometer
+        self._write_u8(self._accel_device, _REG_ACCEL_CTRL_REG1_A, 0x27) # Enable the accelerometer
+        self._write_u8(self._mag_device, _REG_MAG_MR_REG_M, 0x00)        # Enable the magnetometer
+        self._lsm303mag_gauss_lsb_xy = 1100.0
+        self._lsm303mag_gauss_lsb_z = 980.0
         self._mag_gain = MAGGAIN_1_3
         self._mag_rate = MAGRATE_0_7
 
     @property
-    def raw_accel(self):
+    def raw_accelerometer(self):
         """The raw accelerometer sensor values.
         A 3-tuple of X, Y, Z axis values that are 16-bit signed integers.
         """
-        self._read_bytes(_ACCELTYPE, _REG_ACCEL_OUT_X_L_A | 0x80, 6, self._BUFFER)
+        self._read_bytes(self._accel_device, _REG_ACCEL_OUT_X_L_A | 0x80, 6, self._BUFFER)
         return struct.unpack_from('<hhh', self._BUFFER[0:6])
 
 
     @property
-    def accel(self):
+    def accelerometer(self):
         """The processed accelerometer sensor values.
         A 3-tuple of X, Y, Z axis values in meters per second squared that are signed floats.
         """
-        raw_accel_data = self.raw_accel
+        raw_accel_data = self.raw_accelerometer
         return [n / _LSM303ACCEL_MG_LSB * _GRAVITY_STANDARD for n in raw_accel_data]
 
 
     @property
-    def raw_mag(self):
+    def raw_magnetometer(self):
         """The raw magnetometer sensor values.
         A 3-tuple of X, Y, Z axis values that are 16-bit signed integers.
         """
-        self._read_bytes(_MAGTYPE, _REG_MAG_OUT_X_H_M, 6, self._BUFFER)
+        self._read_bytes(self._mag_device, _REG_MAG_OUT_X_H_M, 6, self._BUFFER)
         raw_values = struct.unpack_from('>hhh', self._BUFFER[0:6])
         return [n >> 4 for n in raw_values]
 
 
     @property
-    def mag(self):
+    def magnetometer(self):
         """The processed magnetometer sensor values.
         A 3-tuple of X, Y, Z axis values in microteslas that are signed floats.
         """
-        mag_x, mag_y, mag_z = self.raw_mag
-        return (mag_x / _LSM303MAG_GAUSS_LSB_XY * _GAUSS_TO_MICROTESLA,
-                mag_y / _LSM303MAG_GAUSS_LSB_XY * _GAUSS_TO_MICROTESLA,
-                mag_z / _LSM303MAG_GAUSS_LSB_Z * _GAUSS_TO_MICROTESLA)
+        mag_x, mag_y, mag_z = self.raw_magnetometer
+        return (mag_x / self._lsm303mag_gauss_lsb_xy * _GAUSS_TO_MICROTESLA,
+                mag_y / self._lsm303mag_gauss_lsb_xy * _GAUSS_TO_MICROTESLA,
+                mag_z / self._lsm303mag_gauss_lsb_z * _GAUSS_TO_MICROTESLA)
 
 
     @property
     def mag_gain(self):
+        """The magnetometer's gain."""
         return self._mag_gain
 
 
     @mag_gain.setter
     def mag_gain(self, value):
-        """The magnetometer's gain."""
+        assert value in (MAGGAIN_1_3, MAGGAIN_1_9, MAGGAIN_2_5, MAGGAIN_4_0, MAGGAIN_4_7, MAGGAIN_5_6, MAGGAIN_8_1)
         self._mag_gain = value
-        self._write_u8(_MAGTYPE, _REG_MAG_CRB_REG_M, self._mag_gain)
+        self._write_u8(self._mag_device, _REG_MAG_CRB_REG_M, self._mag_gain)
         if self._mag_gain == MAGGAIN_1_3:
-            _LSM303MAG_GAUSS_LSB_XY = 1100.0
-            _LSM303MAG_GAUSS_LSB_Z  = 980.0
+            self._lsm303mag_gauss_lsb_xy = 1100.0
+            self._lsm303mag_gauss_lsb_z  = 980.0
         elif self._mag_gain == MAGGAIN_1_9:
-            _LSM303MAG_GAUSS_LSB_XY = 855.0
-            _LSM303MAG_GAUSS_LSB_Z  = 760.0
+            self._lsm303mag_gauss_lsb_xy = 855.0
+            self._lsm303mag_gauss_lsb_z  = 760.0
         elif self._mag_gain == MAGGAIN_2_5:
-            _LSM303MAG_GAUSS_LSB_XY = 670.0
-            _LSM303MAG_GAUSS_LSB_Z  = 600.0
+            self._lsm303mag_gauss_lsb_xy = 670.0
+            self._lsm303mag_gauss_lsb_z  = 600.0
         elif self._mag_gain == MAGGAIN_4_0:
-            _LSM303MAG_GAUSS_LSB_XY = 450.0
-            _LSM303MAG_GAUSS_LSB_Z  = 400.0
+            self._lsm303mag_gauss_lsb_xy = 450.0
+            self._lsm303mag_gauss_lsb_z  = 400.0
         elif self._mag_gain == MAGGAIN_4_7:
-            _LSM303MAG_GAUSS_LSB_XY = 400.0
-            _LSM303MAG_GAUSS_LSB_Z  = 355.0
+            self._lsm303mag_gauss_lsb_xy = 400.0
+            self._lsm303mag_gauss_lsb_z  = 355.0
         elif self._mag_gain == MAGGAIN_5_6:
-            _LSM303MAG_GAUSS_LSB_XY = 330.0
-            _LSM303MAG_GAUSS_LSB_Z  = 295.0
+            self._lsm303mag_gauss_lsb_xy = 330.0
+            self._lsm303mag_gauss_lsb_z  = 295.0
         elif self._mag_gain == MAGGAIN_8_1:
-            _LSM303MAG_GAUSS_LSB_XY = 230.0
-            _LSM303MAG_GAUSS_LSB_Z  = 205.0
+            self._lsm303mag_gauss_lsb_xy = 230.0
+            self._lsm303mag_gauss_lsb_z  = 205.0
 
 
     @property
     def mag_rate(self):
+        """The magnetometer update rate."""
         return self._mag_rate
 
 
     @mag_rate.setter
     def mag_rate(self, value):
-        """The magnetometer update rate."""
+        assert value in (MAGRATE_0_7, MAGRATE_1_5, MAGRATE_3_0, MAGRATE_7_5, MAGRATE_15, MAGRATE_30, MAGRATE_75, MAGRATE_220)
         self._mag_rate = value
         reg_m = ((value & 0x07) << 2) & 0xFF
-        self._write_u8(_MAGTYPE, _REG_MAG_CRA_REG_M, reg_m)
+        self._write_u8(self._mag_device, _REG_MAG_CRA_REG_M, reg_m)
 
 
-    def _read_u8(self, sensor_type, address):
-        if sensor_type == _ACCELTYPE:
-            device = self._accel_device
-        else:
-            device = self._mag_device
+    def _read_u8(self, device, address):
         with device as i2c:
             self._BUFFER[0] = address & 0xFF
             i2c.write(self._BUFFER, end=1, stop=False)
@@ -237,22 +230,14 @@ class LSM303(object):
         return self._BUFFER[0]
 
 
-    def _read_bytes(self, sensor_type, address, count, buf):
-        if sensor_type == _ACCELTYPE:
-            device = self._accel_device
-        else:
-            device = self._mag_device
+    def _read_bytes(self, device, address, count, buf):
         with device as i2c:
             buf[0] = address & 0xFF
             i2c.write(buf, end=1, stop=False)
             i2c.readinto(buf, end=count)
 
 
-    def _write_u8(self, sensor_type, address, val):
-        if sensor_type == _ACCELTYPE:
-            device = self._accel_device
-        else:
-            device = self._mag_device
+    def _write_u8(self, device, address, val):
         with device as i2c:
             self._BUFFER[0] = address & 0xFF
             self._BUFFER[1] = val & 0xFF
