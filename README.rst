@@ -30,22 +30,26 @@ Usage Example
 
 .. code-block:: python
                 
-   import time
-   import board
-   import busio
 
-   import adafruit_lsm303
+    import time
+    import board
+    import busio
 
-   i2c = busio.I2C(board.SCL, board.SDA)
-   sensor = adafruit_lsm303.LSM303(i2c)
+    import adafruit_lsm303
 
-   while True:
-       accel_x, accel_y, accel_z, mag_x, mag_y, mag_z = sensor.read()
+    i2c = busio.I2C(board.SCL, board.SDA)
+    sensor = adafruit_lsm303.LSM303(i2c)
 
-       print('Acceleration (m/s^2): ({0:10.3f}, {1:10.3f}, {2:10.3f})'.format(accel_x, accel_y, accel_z))
-       print('Magnetometer (gauss): ({0:10.3f}, {1:10.3f}, {2:10.3f})'.format(mag_x, mag_y, mag_z))
-       print('')
-       time.sleep(1.0)
+    while True:
+    	raw_accel_x, raw_accel_y, raw_accel_z = sensor.read_raw_accel()
+    	accel_x, accel_y, accel_z = sensor.read_accel()
+    	raw_mag_x, raw_mag_y, raw_mag_z = sensor.read_raw_mag()
+    	mag_x, mag_y, mag_z = sensor.read_mag()
+
+    	print('Acceleration raw: ({0:6d}, {1:6d}, {2:6d}), (m/s^2): ({3:10.3f}, {4:10.3f}, {5:10.3f})'.format(raw_accel_x, raw_accel_y, raw_accel_z, accel_x, accel_y, accel_z))
+    	print('Magnetometer raw: ({0:6d}, {1:6d}, {2:6d}), (gauss): ({3:10.3f}, {4:10.3f}, {5:10.3f})'.format(raw_mag_x, raw_mag_y, raw_mag_z, mag_x, mag_y, mag_z))
+    	print('')
+    	time.sleep(1.0)
 
 API Reference
 =============
