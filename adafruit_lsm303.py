@@ -137,49 +137,57 @@ class LSM303(object):
         self._mag_device = I2CDevice(i2c, _ADDRESS_MAG)
         self._write_u8(_ACCELTYPE, _REG_ACCEL_CTRL_REG1_A, 0x27) # Enable the accelerometer
         self._write_u8(_MAGTYPE, _REG_MAG_MR_REG_M, 0x00)        # Enable the magnetometer
-        _mag_gain = 0
-        self.set_mag_gain(MAGGAIN_1_3)
+        self._mag_gain = MAGGAIN_1_3
+        self._mag_rate = MAGRATE_0_7
 
-
-    def read_raw_accel(self):
-        """Read the raw accelerometer sensor values and return
-        it as a 3-tuple of X, Y, Z axis values that are 16-bit signed integers.
+    @property
+    def raw_accel(self):
+        """The raw accelerometer sensor values.
+        A 3-tuple of X, Y, Z axis values that are 16-bit signed integers.
         """
         self._read_bytes(_ACCELTYPE, _REG_ACCEL_OUT_X_L_A | 0x80, 6, self._BUFFER)
         return struct.unpack_from('<hhh', self._BUFFER[0:6])
 
-    def read_accel(self):
-        """Read the processed accelerometer sensor values and return
-        it as a 3-tuple of X, Y, Z axis values in meters per second squared that are signed floats.
+
+    @property
+    def accel(self):
+        """The processed accelerometer sensor values.
+        A 3-tuple of X, Y, Z axis values in meters per second squared that are signed floats.
         """
-        raw_accel_data = self.read_raw_accel()
+        raw_accel_data = self.raw_accel
         return [n / _LSM303ACCEL_MG_LSB * _GRAVITY_STANDARD for n in raw_accel_data]
 
 
-    def read_raw_mag(self):
-        """Read the raw magnetometer sensor values and return
-        it as a 3-tuple of X, Y, Z axis values that are 16-bit signed integers.
+    @property
+    def raw_mag(self):
+        """The raw magnetometer sensor values.
+        A 3-tuple of X, Y, Z axis values that are 16-bit signed integers.
         """
         self._read_bytes(_MAGTYPE, _REG_MAG_OUT_X_H_M, 6, self._BUFFER)
         raw_values = struct.unpack_from('>hhh', self._BUFFER[0:6])
         return [n >> 4 for n in raw_values]
 
 
-    def read_mag(self):
-        """Read the processed magnetometer sensor values and return
-        it as a 3-tuple of X, Y, Z axis values in microteslas that are signed floats.
+    @property
+    def mag(self):
+        """The processed magnetometer sensor values.
+        A 3-tuple of X, Y, Z axis values in microteslas that are signed floats.
         """
-        mag_x, mag_y, mag_z = self.read_raw_mag()
+        mag_x, mag_y, mag_z = self.raw_mag
         return (mag_x / _LSM303MAG_GAUSS_LSB_XY * _GAUSS_TO_MICROTESLA,
                 mag_y / _LSM303MAG_GAUSS_LSB_XY * _GAUSS_TO_MICROTESLA,
                 mag_z / _LSM303MAG_GAUSS_LSB_Z * _GAUSS_TO_MICROTESLA)
 
 
-    def set_mag_gain(self, gain):
-        """Set the magnetometer's gain.
-        @param int gain: One of the magnetometer gain constants.
-        """
-        self._mag_gain = gain
+    @property
+    def mag_gain(self):
+        return self._mag_gain
+
+
+    @mag_gain.setter
+    def mag_gain(self, value):
+        """The magnetometer's gain."""
+        self._mag_gain = value
         self._write_u8(_MAGTYPE, _REG_MAG_CRB_REG_M, self._mag_gain)
         if self._mag_gain == MAGGAIN_1_3:
             _LSM303MAG_GAUSS_LSB_XY = 1100.0
@@ -203,11 +211,17 @@ class LSM303(object):
             _LSM303MAG_GAUSS_LSB_XY = 230.0
             _LSM303MAG_GAUSS_LSB_Z  = 205.0
 
-    def set_mag_rate(self, rate):
-        """Set the magnetometer update rate.
-        @param int rate - One of the magnetometer rate constants.
-        """
-        reg_m = ((rate & 0x07) << 2) & 0xFF
+
+    @property
+    def mag_rate(self):
+        return self._mag_rate
+
+
+    @mag_rate.setter
+    def mag_rate(self, value):
+        """The magnetometer update rate."""
+        self._mag_rate = value
+        reg_m = ((value & 0x07) << 2) & 0xFF
         self._write_u8(_MAGTYPE, _REG_MAG_CRA_REG_M, reg_m)
 
 
