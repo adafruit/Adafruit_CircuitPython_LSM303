@@ -46,6 +46,7 @@ _ADDRESS_ACCEL             = const(0x19)  # (0x32 >> 1)       // 0011001x
 _ADDRESS_MAG               = const(0x1E)  # (0x3C >> 1)       // 0011110x
 _ID                        = const(0xD4)  # (0b11010100)
 
+# Accelerometer registers
 _REG_ACCEL_CTRL_REG1_A     = const(0x20)
 _REG_ACCEL_CTRL_REG2_A     = const(0x21)
 _REG_ACCEL_CTRL_REG3_A     = const(0x22)
@@ -77,6 +78,7 @@ _REG_ACCEL_TIME_LIMIT_A    = const(0x3B)
 _REG_ACCEL_TIME_LATENCY_A  = const(0x3C)
 _REG_ACCEL_TIME_WINDOW_A   = const(0x3D)
 
+# Magnetometer registers
 _REG_MAG_CRA_REG_M         = const(0x00)
 _REG_MAG_CRB_REG_M         = const(0x01)
 _REG_MAG_MR_REG_M          = const(0x02)
@@ -93,6 +95,7 @@ _REG_MAG_IRC_REG_M         = const(0x0C)
 _REG_MAG_TEMP_OUT_H_M      = const(0x31)
 _REG_MAG_TEMP_OUT_L_M      = const(0x32)
 
+# Magnetometer gains
 MAGGAIN_1_3                = const(0x20)  # +/- 1.3 
 MAGGAIN_1_9                = const(0x40)  # +/- 1.9
 MAGGAIN_2_5                = const(0x60)  # +/- 2.5
@@ -101,6 +104,7 @@ MAGGAIN_4_7                = const(0xA0)  # +/- 4.7
 MAGGAIN_5_6                = const(0xC0)  # +/- 5.6
 MAGGAIN_8_1                = const(0xE0)  # +/- 8.1
 
+# Magentometer rates
 MAGRATE_0_7                = const(0x00)  # 0.75 Hz
 MAGRATE_1_5                = const(0x01)  # 1.5 Hz
 MAGRATE_3_0                = const(0x62)  # 3.0 Hz
@@ -110,9 +114,11 @@ MAGRATE_30                 = const(0x05)  # 30 Hz
 MAGRATE_75                 = const(0x06)  # 75 Hz
 MAGRATE_220                = const(0x07)  # 200 Hz
 
+# Sensor types
 _ACCELTYPE                 = True
 _MAGTYPE                   = False
 
+# Conversion constants
 _LSM303ACCEL_MG_LSB        = 16704.0        # 1, 2, 4 or 12 mg per lsb
 _LSM303MAG_GAUSS_LSB_XY    = 1100.0       # Varies with gain
 _LSM303MAG_GAUSS_LSB_Z     = 980.0        # Varies with gain
@@ -175,6 +181,9 @@ class LSM303:
 
 
     def set_mag_gain(self, gain):
+		"""Set the magnetometer's gain.
+		@param int gain: One of the magnetometer gain constants.
+		"""
         self._mag_gain = gain
         self._write_u8(_MAGTYPE, _REG_MAG_CRB_REG_M, self._mag_gain)
         if self._mag_gain == MAGGAIN_1_3:
@@ -200,6 +209,9 @@ class LSM303:
             _LSM303MAG_GAUSS_LSB_Z  = 205.0
 
     def set_mag_rate(self, rate):
+		"Set the magnetometer update rate.
+		@param int rate - One of the magnetometer rate constants.
+		"""
         reg_m = ((rate & 0x07) << 2) & 0xFF
         self.write_u8(_MAGTYPE, _REG_MAG_CRA_REG_M, reg_m)
 
