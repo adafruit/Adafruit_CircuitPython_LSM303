@@ -2,7 +2,7 @@
 Introduction
 ============
 
-.. image:: https://readthedocs.org/projects/adafruit-circuitpython-lsm303/badge/?version=latest
+.. image:: https://readthedocs.org/projects/circuitpython-lsm303/badge/?version=latest
 
     :target: https://circuitpython.readthedocs.io/projects/lsm303/en/latest/
 
@@ -35,10 +35,10 @@ Usage Example
     import board
     import busio
 
-    import adafruit_lsm303
+    import lsm303
 
     i2c = busio.I2C(board.SCL, board.SDA)
-    sensor = adafruit_lsm303.LSM303(i2c)
+    sensor = lsm303.LSM303(i2c)
 
     while True:
     	raw_accel_x, raw_accel_y, raw_accel_z = sensor.read_raw_accel()
@@ -88,4 +88,4 @@ Then run the build:
 
 .. code-block:: shell
 
-    circuitpython-build-bundles --filename_prefix adafruit-circuitpython-lsm303 --library_location .
+    circuitpython-build-bundles --filename_prefix circuitpython-lsm303 --library_location .

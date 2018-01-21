@@ -3,10 +3,10 @@ import time
 import board
 import busio
 
-import adafruit_lsm303
+import lsm303
 
 i2c = busio.I2C(board.SCL, board.SDA)
-sensor = adafruit_lsm303.LSM303(i2c)
+sensor = lsm303.LSM303(i2c)
 
 while True:
 	raw_accel_x, raw_accel_y, raw_accel_z = sensor.raw_accelerometer
