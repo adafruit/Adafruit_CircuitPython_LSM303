@@ -86,7 +86,7 @@ _REG_MAG_OUT_Z_H_M         = const(0x05)
 _REG_MAG_OUT_Z_L_M         = const(0x06)
 _REG_MAG_OUT_Y_H_M         = const(0x07)
 _REG_MAG_OUT_Y_L_M         = const(0x08)
-_REG_MAG_SR_REG_Mg         = const(0x09)
+_REG_MAG_SR_REG_M          = const(0x09)
 _REG_MAG_IRA_REG_M         = const(0x0A)
 _REG_MAG_IRB_REG_M         = const(0x0B)
 _REG_MAG_IRC_REG_M         = const(0x0C)
@@ -182,7 +182,10 @@ class LSM303(object):
 
     @mag_gain.setter
     def mag_gain(self, value):
+	# pylint: disable=line-too-long
         assert value in (MAGGAIN_1_3, MAGGAIN_1_9, MAGGAIN_2_5, MAGGAIN_4_0, MAGGAIN_4_7, MAGGAIN_5_6, MAGGAIN_8_1)
+	# pylint: enable=line-too-long
+
         self._mag_gain = value
         self._write_u8(self._mag_device, _REG_MAG_CRB_REG_M, self._mag_gain)
         if self._mag_gain == MAGGAIN_1_3:
@@ -216,7 +219,10 @@ class LSM303(object):
 
     @mag_rate.setter
     def mag_rate(self, value):
+	# pylint: disable=line-too-long
         assert value in (MAGRATE_0_7, MAGRATE_1_5, MAGRATE_3_0, MAGRATE_7_5, MAGRATE_15, MAGRATE_30, MAGRATE_75, MAGRATE_220)
+	# pylint: enable=line-too-long
+
         self._mag_rate = value
         reg_m = ((value & 0x07) << 2) & 0xFF
         self._write_u8(self._mag_device, _REG_MAG_CRA_REG_M, reg_m)
@@ -230,15 +236,15 @@ class LSM303(object):
         return self._BUFFER[0]
 
 
-    def _read_bytes(self, device, address, count, buf):
-        with device as i2c:
-            buf[0] = address & 0xFF
-            i2c.write(buf, end=1, stop=False)
-            i2c.readinto(buf, end=count)
-
-
     def _write_u8(self, device, address, val):
         with device as i2c:
             self._BUFFER[0] = address & 0xFF
             self._BUFFER[1] = val & 0xFF
             i2c.write(self._BUFFER, end=2)
+
+    # pylint: disable=no-self-use
+    def _read_bytes(self, device, address, count, buf):
+        with device as i2c:
+            buf[0] = address & 0xFF
+            i2c.write(buf, end=1, stop=False)
+            i2c.readinto(buf, end=count)
