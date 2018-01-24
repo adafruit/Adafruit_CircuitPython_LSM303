@@ -2,17 +2,15 @@
 Introduction
 ============
 
-.. image:: https://readthedocs.org/projects/circuitpython-lsm303/badge/?version=latest
-
+.. image:: https://readthedocs.org/projects/adafruit-circuitpython-lsm303/badge/?version=latest
     :target: https://circuitpython.readthedocs.io/projects/lsm303/en/latest/
-
     :alt: Documentation Status
 
 .. image :: https://img.shields.io/discord/327254708534116352.svg
     :target: https://discord.gg/nBQh6qu
     :alt: Discord
 
-TODO
+Adafruit CircuitPython module for the LSM303 6-DoF with 3-axis accelerometer and magnetometer
 
 Dependencies
 =============
@@ -35,10 +33,10 @@ Usage Example
     import board
     import busio
 
-    import lsm303
+    import adafruit_lsm303
 
     i2c = busio.I2C(board.SCL, board.SDA)
-    sensor = lsm303.LSM303(i2c)
+    sensor = adafruit_lsm303.LSM303(i2c)
 
     while True:
     	raw_accel_x, raw_accel_y, raw_accel_z = sensor.read_raw_accel()
@@ -63,7 +61,7 @@ Contributing
 ============
 
 Contributions are welcome! Please read our `Code of Conduct
-<https://github.com/dastels/Adafruit__CircuitPython_lsm303/blob/master/CODE_OF_CONDUCT.md>`_
+<https://github.com/adafruit/Adafruit_CircuitPython_LSM303/blob/master/CODE_OF_CONDUCT.md>`_
 before contributing to help this project stay welcoming.
 
 Building locally
@@ -88,4 +86,4 @@ Then run the build:
 
 .. code-block:: shell
 
-    circuitpython-build-bundles --filename_prefix circuitpython-lsm303 --library_location .
+    circuitpython-build-bundles --filename_prefix adafruit-circuitpython-lsm303 --library_location .
