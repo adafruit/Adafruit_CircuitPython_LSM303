@@ -31,7 +31,7 @@ source_suffix = '.rst'
 master_doc = 'README'
 
 # General information about the project.
-project = u'Adafruit_ lsm303 Library'
+project = u'Adafruit LSM303 Library'
 copyright = u'2017 Dave Astels'
 author = u'Dave Astels'
 
@@ -96,7 +96,7 @@ else:
 html_static_path = ['_static']
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'Adafruit_Lsm303Librarydoc'
+htmlhelp_basename = 'AdafruitLsm303Librarydoc'
 
 # -- Options for LaTeX output ---------------------------------------------
 
@@ -122,7 +122,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'Adafruit_lsm303Library.tex', u'Adafruit_lsm303 Library Documentation',
+    (master_doc, 'AdafruitLSM303Library.tex', u'AdafruitLSM303 Library Documentation',
      author, 'manual'),
 ]
 
@@ -131,7 +131,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'Adafruit_lsm303library', u'Adafruit_ lsm303 Library Documentation',
+    (master_doc, 'AdafruitLSM303library', u'Adafruit LSM303 Library Documentation',
      [author], 1)
 ]
 
@@ -141,7 +141,7 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'Adafruit_lsm303Library', u'Adafruit_ lsm303 Library Documentation',
-     author, 'Adafruit_lsm303Library', 'One line description of project.',
+    (master_doc, 'AdafruitLSM303Library', u'Adafruit LSM303 Library Documentation',
+     author, 'AdafruitLSM303Library', 'One line description of project.',
      'Miscellaneous'),
 ]
