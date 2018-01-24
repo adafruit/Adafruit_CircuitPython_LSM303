@@ -27,5 +27,5 @@ install:
 
 script:
   - pylint adafruit_lsm303.py
-  - ([[ ! -d "examples" ]] || pylint --disable=missing-docstring,invalid-name,bad-whitespace examples/*.py)
+  - ([[ ! -d "examples" ]] || pylint --disable=missing-docstring,invalid-name,bad-whitespace examples/*/*.py)
   - circuitpython-build-bundles --filename_prefix adafruit-circuitpython-lsm303 --library_location .
