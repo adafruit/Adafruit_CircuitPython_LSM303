@@ -20,11 +20,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 """
-`lsm303`
+`adafruit_LSM303`
 ====================================================
 
 
-CircuitPython driver for the LSM303 accelerometer.
+CircuitPython driver for the LSM303 accelerometer + magnetometer.
 
 * Author(s): Dave Astels
 """
@@ -37,7 +37,7 @@ from micropython import const
 from adafruit_bus_device.i2c_device import I2CDevice
 
 __version__ = "0.0.0-auto.0"
-__repo__ = "https://github.com/dastels/circuitpython_lsm303.git"
+__repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_LSM303.git"
 
 # pylint: disable=bad-whitespace
 _ADDRESS_ACCEL             = const(0x19)  # (0x32 >> 1)       // 0011001x
