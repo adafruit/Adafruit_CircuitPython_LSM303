@@ -160,7 +160,7 @@ class LSM303(object):
         """
         self._read_bytes(self._mag_device, _REG_MAG_OUT_X_H_M, 6, self._BUFFER)
         raw_values = struct.unpack_from('>hhh', self._BUFFER[0:6])
-        return [n >> 4 for n in raw_values]
+        return tuple([n >> 4 for n in raw_values])
 
     @property
     def magnetic(self):
