@@ -20,13 +20,30 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 """
-`adafruit_LSM303`
+`adafruit_lsm303`
 ====================================================
 
 
 CircuitPython driver for the LSM303 accelerometer + magnetometer.
 
 * Author(s): Dave Astels
+
+Implementation Notes
+--------------------
+
+**Hardware:**
+
+* Adafruit `Triple-axis Accelerometer+Magnetometer (Compass) Board - LSM303
+  <https://www.adafruit.com/product/1120>`_ (Product ID: 1120)
+* Adafruit `FLORA Accelerometer/Compass Sensor - LSM303 - v1.0
+  <https://www.adafruit.com/product/1247>`_ (Product ID: 1247)
+
+**Software and Dependencies:**
+
+* Adafruit CircuitPython firmware for the ESP8622 and M0-based boards:
+  https://github.com/adafruit/circuitpython/releases
+* Adafruit's Bus Device library:
+  https://github.com/adafruit/Adafruit_CircuitPython_BusDevice
 """
 
 try:
