@@ -136,6 +136,8 @@ _GAUSS_TO_MICROTESLA       = 100.0        # Gauss to micro-Tesla multiplier
 # pylint: enable=bad-whitespace
 
 
+# pylint: disable=useless-object-inheritance
+# Pylint issue needs to be fixed.
 class LSM303(object):
     """Driver for the LSM303 accelerometer/magnetometer."""
 
