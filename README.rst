@@ -10,8 +10,8 @@ Introduction
     :target: https://discord.gg/nBQh6qu
     :alt: Discord
 
-.. image:: https://travis-ci.org/adafruit/Adafruit_CircuitPython_LSM303.svg?branch=master
-    :target: https://travis-ci.org/adafruit/Adafruit_CircuitPython_LSM303
+.. image:: https://travis-ci.com/adafruit/Adafruit_CircuitPython_LSM303.svg?branch=master
+    :target: https://travis-ci.com/adafruit/Adafruit_CircuitPython_LSM303
     :alt: Build Status
 
 Adafruit CircuitPython module for the LSM303 6-DoF with 3-axis accelerometer and magnetometer
