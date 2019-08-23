@@ -240,8 +240,8 @@ class LSM303(object):
     def _read_u8(self, device, address):
         with device as i2c:
             self._BUFFER[0] = address & 0xFF
-            i2c.write(self._BUFFER, end=1, stop=False)
-            i2c.readinto(self._BUFFER, end=1)
+            i2c.write_then_readinto(self._BUFFER, self._BUFFER,
+                                    out_end=1, in_end=1)
         return self._BUFFER[0]
 
     def _write_u8(self, device, address, val):
@@ -254,5 +254,4 @@ class LSM303(object):
     def _read_bytes(device, address, count, buf):
         with device as i2c:
             buf[0] = address & 0xFF
-            i2c.write(buf, end=1, stop=False)
-            i2c.readinto(buf, end=count)
+            i2c.write_then_readinto(buf, buf, out_end=1, in_end=count)
