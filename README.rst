@@ -1,3 +1,20 @@
+This library archived and no longer supported
+=============================================
+This library has been split into separate libararies for the magnetometer and accelerometer. The accelerometer code will  be shared with another version of the LSM303 that uses the same accelerometer but not the magnetometer and this repo will be archived.
+
+The new, split libraries
+
+https://github.com/adafruit/Adafruit_CircuitPython_LSM303_Accel
+
+https://github.com/adafruit/Adafruit_CircuitPython_LSM303DLH_Mag
+
+The library for the new magnetometer
+
+https://github.com/adafruit/Adafruit_CircuitPython_LSM303AGR_Mag
+
+You can find usage information for the new libraries in the sensor's guide:
+
+https://learn.adafruit.com/lsm303-accelerometer-slash-compass-breakout/python-circuitpython
 
 Introduction
 ============
