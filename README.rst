@@ -1,6 +1,8 @@
-This library archived and no longer supported
+This library is archived and no longer supported
 =============================================
 This library has been split into separate libararies for the magnetometer and accelerometer. The accelerometer code will  be shared with another version of the LSM303 that uses the same accelerometer but not the magnetometer and this repo will be archived.
+
+This library will no longer be supported. Please us the new libraries
 
 The new, split libraries
 
